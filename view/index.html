@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>留言本</title>
+  <!-- 
+    浏览器收到 HTML 响应内容之后，就要开始从上到下依次解析，
+    当在解析的过程中，如果发现：
+      link
+      script
+      img
+      iframe
+      video
+      audio
+    等带有 src 或者 href（link） 属性标签（具有外链的资源）的时候，浏览器会自动对这些资源发起新的请求。
+   -->
+   <!-- 
+      注意：在服务端中，文件中的路径就不要去写相对路径了。
+      因为这个时候所有的资源都是通过 url 标识来获取的
+      我的服务器开放了 /public/ 目录
+      所以这里的请求路径都写成：/public/xxx
+      / 在这里就是 url 根路径的意思。
+      浏览器在真正发请求的时候会最终把 http://127.0.0.1:3000 拼上
+
+      不要再想文件路径了，把所有的路径都想象成 url 地址
+    -->
+  <link rel="stylesheet" href="/public/lib/bootstrap/css/bootstrap.css">
+  <link rel="stylesheet" type="text/css" href="/public/css/style.css" />
+</head>
+
+<body>
+<header style="margin: 0 auto">
+  <div class="header-content" >
+    <div class="commont">信 管 随 心 所 欲 留 言 板 系 统</div>
+    <div class="commont-right">坦白从宽</div>
+  </div>
+</header>
+<div style="display: block;position:relative;">
+  <div class="header container">
+    <div class="page-header">
+      <h1>公共留言版 <small>即时留言</small></h1>
+      <form action="/post" method="get">
+      <button class="btn btn-success" id="posted">发表留言</button>
+        <input type="text" id="hidened"  style="display: none">
+      </form>
+      <div style="float: right;">
+        <form action="/delete" method="get" onsubmit="return checkip()">
+          <p>删除第<input class="form-control" style="width: 20%;display: inline;margin: 0 6px" type="text" name="id" id="delcon"/>条留言<button class="btn btn-info" id="del" style="margin-left: 10px">提交</button></p>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="comments container">
+    <ul class="list-group">
+      {{each comments}}
+        <li class="list-group-item">
+          <span class="id-style">{{$value.id}}</span>
+          、
+          <span class="name-style">{{$value.name}}</span>
+          对
+          <span class="toName-style">{{$value.toName }}</span>
+          说：
+          <span class="comment-style">{{$value.comment}}</span>
+          <city class="pull-right">{{$value.time}}</city></li>
+      {{/each}}
+    </ul>
+
+  </div>
+  <div id="banner">
+  <div id="carousel">
+    <img src="/public/img/1.png" data-url="#">
+    <img src="/public/img/2.png" data-url="#">
+    <img src="/public/img/3.png" data-url="#">
+    <img src="/public/img/4.png" data-url="#">
+    <img src="/public/img/5.png" data-url="#">
+    <img src="/public/img/6.png" data-url="#">
+    <img src="/public/img/7.png" data-url="#">
+    <img src="/public/img/8.png" data-url="#">
+  </div>
+</div>
+</div>
+  <footer class="panel-footer foot-wrapper">
+    <div class="foot-content">
+      <span class="full-left">制作者：彭君销</span>
+      <span class="full-right">Version 1.0.1</span>
+    </div>
+  </footer>
+<script src="/public/js/jquery-1.11.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="/public/js/slider.js" type="text/javascript" charset="utf-8"></script>
+<script>
+  //查看当前首页有多少条信息
+  var num=document.getElementsByTagName("li").length+1
+  //把这个数字当作id值存到本地存储中
+  localStorage.setItem('num',num)
+    //设置删除留言提醒，是否删除
+    document.getElementById('del').onclick=function () {
+      var flag=confirm('是否删除留言')
+      if (flag){
+        //是的话再判断输入的值会不会超过已有的数据条数
+        console.log(document.getElementById('delcon').value);
+        if (document.getElementById('delcon').value>=num||document.getElementById('delcon').value<1){
+          alert('输入有误！')
+          return false
+        }
+        return function checkip() {
+          return true
+        }
+        //不然就不提交
+      } else {
+        return false
+      }
+    }
+
+  $(function() {
+    $('#carousel').carousel({
+      curDisplay: 0, //默认索引
+      autoPlay: false, //是否自动播放
+      interval: 3000 //间隔时间
+    });
+  });
+</script>
+</body>
+
+</html>
